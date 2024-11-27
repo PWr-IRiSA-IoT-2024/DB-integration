@@ -27,7 +27,8 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 
 def write_data_to_db(measurement, tags, time, fields):
     """
-    Writes a single data point to the InfluxDB database.
+    Writes a single data point to InfluxDB database.
+    Creates a new database if name from DB_NAME is not found.
     
     Parameters:
         measurement (str): The measurement name.
@@ -36,11 +37,18 @@ def write_data_to_db(measurement, tags, time, fields):
         fields (dict): Dictionary of field keys and values.
 
         Example usage:
-            - measurement = 'temperature'
+            - measurement = "temperature"
             - tags = {"location": "office"}
             - time = "2019-01-29T13:02:34.981Z"
             - fields = {"value": 23.5}
     """
+
+    databases = client.get_list_database()
+
+    found = any(db['name'] == DB_NAME for db in databases)
+
+    if not found:
+        client.create_database(DB_NAME)
     
     data = [{
         "measurement": measurement,
