@@ -20,8 +20,6 @@ DB_PASS = os.getenv("DB_PASS")
 DB_NAME = os.getenv("DB_NAME")
 
 
-client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASS, DB_NAME)
-
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
@@ -35,6 +33,7 @@ def read_10_min_of_data_from_db(measurement):
         Example usage:
             - measurement = 'temperature'
     """
+    client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASS, DB_NAME)
 
     query = f"select * from {measurement} where time > now() - 10m and time_precision='ms'"
 
@@ -57,6 +56,7 @@ def read_data_from_db(query):
         Example usage:
             - query = 'select * from temperature'
     """
+    client = InfluxDBClient(DB_HOST, DB_PORT, DB_USER, DB_PASS, DB_NAME)
 
     try:
         result = client.query(query)
